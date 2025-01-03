@@ -31,6 +31,10 @@ jobs:
       - name: Deploy to AWS Lightsail
         run: |
           ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ubuntu@${{ secrets.AWS_LS_IP }} << 'EOF'
+
+            # 루트 권한을 얻기 위해 sudo -i 사용
+            sudo -i
+
             # Django 프로젝트 디렉토리로 이동
             cd /home/Literature
 
