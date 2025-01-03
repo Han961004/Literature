@@ -4,10 +4,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+&2r64c8n7j&xc=q1x=@dt3kiq!8=_y&5ux$li+(0ndw_r$=5$'
 DEBUG = True
 ALLOWED_HOSTS = ['43.202.41.78']
-CORS_ALLOWED_ORIGINS = [
-    "http://43.202.41.78:8000"
-]
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://43.202.41.78:8000"
+# ]
+# CORS_ALLOW_CREDENTIALS = True
 
 INSTALLED_APPS = [
     # apps
