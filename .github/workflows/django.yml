@@ -41,7 +41,13 @@ jobs:
             # 최신 코드로 업데이트
             git pull origin main
 
-            # 가상 환경 활성화
+            # 가상 환경이 없다면, 먼저 생성해야 합니다.
+            python3 -m venv venv
+
+            # 가상 환경 생성 및 활성화 (존재하지 않으면)
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
             source venv/bin/activate
 
             # 필요한 패키지 설치
