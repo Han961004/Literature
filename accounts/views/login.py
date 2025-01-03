@@ -1,6 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.views.decorators.csrf import csrf_exempt
-
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,7 +6,6 @@ from rest_framework.authtoken.models import Token
 from ..serializers.user import *
 
 
-@csrf_exempt
 class LoginView(APIView):
     authentication_classes = []  # 인증 비활성화
     permission_classes = []      # 권한 검사 비활성화
