@@ -1,0 +1,56 @@
+# Python 기본
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# 환경설정 파일 및 가상 환경
+.env
+*.env
+.venv/
+venv/
+env/
+
+# Django 기본 설정
+db.sqlite3
+/static/
+media/
+*.log
+*.pot
+*.pyc
+*.so
+
+# Django 마이그레이션 파일
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# IDE 설정 파일
+.idea/
+.vscode/
+*.swp
+*~
+
+# 기타
+*.log
+*.bak
+*.tmp
+*.orig
+*.DS_Store
+
+# Coverage 보고서
+htmlcov/
+.tox/
+coverage.xml
+*.cover
+.pytest_cache/
+.cache/
+.coverage
+.nox/
+dist/
+build/
+
+# pipenv, poetry 등의 종속성 관리 파일
+Pipfile
+Pipfile.lock
+poetry.lock
