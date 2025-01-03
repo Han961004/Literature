@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
 
 jobs:
   deploy:
@@ -56,9 +60,6 @@ jobs:
             # 데이터베이스 마이그레이션
             python manage.py migrate
 
-            # 정적 파일 수집
-            # python manage.py collectstatic --noinput
-
             # Django 애플리케이션 재시작 (supervisor 또는 systemd를 사용하여)
-            # sudo systemctl restart your_django_service
+            sudo systemctl restart your_django_service
           EOF
