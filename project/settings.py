@@ -8,8 +8,8 @@ ALLOWED_HOSTS = ['43.202.41.78']
 INSTALLED_APPS = [
     # apps
     'accounts',
-    'posts',
-    'comments',
+    # 'posts',
+    # 'comments',
     
     
     'django.contrib.admin',
