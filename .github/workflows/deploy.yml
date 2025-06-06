@@ -71,9 +71,9 @@ jobs:
             sleep 2
           done
 
-      ## CI에서 makemigrations
-      - name: Run makemigrations
-        run: python manage.py makemigrations --settings=config.settings.dev
+      ## CI에서 makemigrations 는 생략한다고 함
+      # - name: Run makemigrations
+      #   run: python manage.py makemigrations --settings=config.settings.dev
 
       ## CI에서 migrate
       - name: Run migrate
