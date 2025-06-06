@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Tests(APITestCase):
 
-    # 초기화 user1 & user2 생성
+    # 초기화 user1~3 생성
     def setUp(self):
         self.join_url = reverse('user_create')
         self.login_url = reverse('login')
@@ -22,10 +22,15 @@ class Tests(APITestCase):
         self.user2.is_active = True
         self.user2.save()
         Profile.objects.create(user=self.user2, nickname='user2')
+        
+        self.user3 = User.objects.create_user(email='user3@example.com', password='password123')
+        self.user3.is_active = True
+        self.user3.save()
+        Profile.objects.create(user=self.user3, nickname='user3')
     
     # 권한 Helper 함수
     def authenticate(self):
-        res = self.client.post(self.login_url, {"email": "user1@example.com", "password": "password123"})
+        res = self.client.post(self.login_url, {"email": "user3@example.com", "password": "password123"})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         token = res.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
