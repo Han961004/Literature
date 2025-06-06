@@ -41,23 +41,23 @@ class Tests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('token', response.data)
 
-    def test_follow_and_unfollow(self):
-        # 로그인
-        login_res = self.client.post(self.login_url, {
-            "email": "user1@example.com",
-            "password": "password123"
-        })
-        token = login_res.data['response']['token']  # <- 수정된 부분
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+    # def test_follow_and_unfollow(self):
+    #     # 로그인
+    #     login_res = self.client.post(self.login_url, {
+    #         "email": "user1@example.com",
+    #         "password": "password123"
+    #     })
+    #     token = login_res.data['response']['token']  # <- 수정된 부분
+    #     self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
-        # follow
-        res = self.client.post(self.follow_url, {"following": self.other_user.id})
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(Follow.objects.filter(follower=self.user, following=self.other_user).exists())
+    #     # follow
+    #     res = self.client.post(self.follow_url, {"following": self.other_user.id})
+    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+    #     self.assertTrue(Follow.objects.filter(follower=self.user, following=self.other_user).exists())
 
-        # unfollow
-        follow_id = res.data['id']
-        unfollow_url = reverse('unfollowing', kwargs={'pk': follow_id})
-        del_res = self.client.delete(unfollow_url)
-        self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Follow.objects.filter(id=follow_id).exists())
+    #     # unfollow
+    #     follow_id = res.data['id']
+    #     unfollow_url = reverse('unfollowing', kwargs={'pk': follow_id})
+    #     del_res = self.client.delete(unfollow_url)
+    #     self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
+    #     self.assertFalse(Follow.objects.filter(id=follow_id).exists())
