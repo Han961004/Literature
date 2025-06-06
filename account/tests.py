@@ -8,56 +8,69 @@ User = get_user_model()
 
 class Tests(APITestCase):
 
+    # 초기화 user1 & user2 생성
     def setUp(self):
-        self.signup_url = reverse('join')
+        self.join_url = reverse('user_create')
         self.login_url = reverse('login')
-        self.follow_url = reverse('following')
 
-        self.user = User.objects.create_user(email='user1@example.com', password='password123')
-        self.user.is_active = True
-        self.user.save()
-        Profile.objects.create(user=self.user, nickname='user1')
+        self.user1 = User.objects.create_user(email='user1@example.com', password='password123')
+        self.user1.is_active = True
+        self.user1.save()
+        Profile.objects.create(user=self.user1, nickname='user1')
 
-        self.other_user = User.objects.create_user(email='user2@example.com', password='password123')
-        self.other_user.is_active = True
-        self.other_user.save()
-        Profile.objects.create(user=self.other_user, nickname='user2')
+        self.user2 = User.objects.create_user(email='user2@example.com', password='password123')
+        self.user2.is_active = True
+        self.user2.save()
+        Profile.objects.create(user=self.user2, nickname='user2')
+    
+    # 권한
+    def authenticate(self):
+        res = self.client.post(self.login_url, {"email": "user1@example.com", "password": "password123"})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        token = res.data['token'] if 'token' in res.data else res.data['response']['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
-    def test_user_signup(self):
-        data = {
-            "email": "new@example.com",
-            "password": "newpassword123"
-        }
-        response = self.client.post(self.signup_url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    # 회원 가입 및 프로필 생성 성공
+    def user_join_success(self):
+        data = {"email": "new@example.com", "password": "newpassword123"}
+        res = self.client.post(self.join_url, data)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(User.objects.filter(email="new@example.com").exists())
+    
+    # 회원 가입 실패
+    def user_join_fail(self):
+        data = {"email": "user1@example.com", "password": "short"}
+        res = self.client.post(self.join_url, data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_user_login(self):
-        data = {
-            "email": "user1@example.com",
-            "password": "password123"
-        }
-        response = self.client.post(self.login_url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('token', response.data)
+    # 회원 정보 수정 성공(패스워드 변경)
+    
+    # 회원 탈퇴 성공
+    def user_delete_success(self):
+        self.authenticate()
+        url = reverse('user_delete')
+        res = self.client.delete(url)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_follow_and_unfollow(self):
-    #     # 로그인
-    #     login_res = self.client.post(self.login_url, {
-    #         "email": "user1@example.com",
-    #         "password": "password123"
-    #     })
-    #     token = login_res.data['response']['token']  # <- 수정된 부분
-    #     self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+    # 프로필 정보 수정 성공
+    
+    # 프로필 정보 수정 실패
+    
+    # 로그인 성공
+    def login_success(self):
+        data = {"email": "user1@example.com", "password": "password123"}
+        res = self.client.post(self.login_url, data)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn("token", res.data['response'])
 
-    #     # follow
-    #     res = self.client.post(self.follow_url, {"following": self.other_user.id})
-    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-    #     self.assertTrue(Follow.objects.filter(follower=self.user, following=self.other_user).exists())
-
-    #     # unfollow
-    #     follow_id = res.data['id']
-    #     unfollow_url = reverse('unfollowing', kwargs={'pk': follow_id})
-    #     del_res = self.client.delete(unfollow_url)
-    #     self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertFalse(Follow.objects.filter(id=follow_id).exists())
+    # 로그인 실패
+    def login_fail(self):
+        data = {"email": "user1@example.com", "password": "wrongpass"}
+        res = self.client.post(self.login_url, data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        
+    # 팔로우 생성
+    
+    # 팔로우 조회 
+    
+    # 팔로우 삭제
