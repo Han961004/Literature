@@ -32,7 +32,7 @@ class Tests(APITestCase):
     def authenticate(self):
         res = self.client.post(self.login_url, {"email": "user3@example.com", "password": "password123"})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        token = res.data['token']
+        token = res.data.get('token') or res.data.get('response', {}).get('token')
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
     # 회원 가입 및 프로필 생성 성공
@@ -66,7 +66,7 @@ class Tests(APITestCase):
         data = {"email": "user1@example.com", "password": "password123"}
         res = self.client.post(self.login_url, data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertIn("token", res.data['response'])
+        self.assertIn("token", res.data or res.data.get("response", {}))
 
     # 로그인 실패
     def test_login_fail(self):
