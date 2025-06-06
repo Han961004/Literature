@@ -1,0 +1,80 @@
+name: Literature App CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build: ## Job의 ID
+    
+    runs-on: ubuntu-latest
+
+    services: ## 사용할 외부 서비스 -> 내부적으로 자동으로 도커 컨테이너를 생성해서 실행함
+      
+      # nginx:
+      #   image: nginx:alpine
+      #   ports:
+      #     - 8080:80
+      #   volumes:
+      #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: literature
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 0000
+        ports:
+          - 5432:5432
+        options: >- ## DB 컨테이너 health check 용도
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      
+      # redis:
+
+    env: ## 이 Jobs 내의 모든 step에서 사용할 환경 변수
+      DEBUG: True
+      SECRET_KEY: test_secret_key
+      DB_NAME: literature
+      DB_USER: postgres
+      DB_PASSWORD: 0000
+      DB_HOST: localhost
+      DB_PORT: 5432
+
+    steps:
+      ## 저장소의 코드 받아옴 = git clone
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      ## GitActions 가상머신에 파이썬 3.11 환경 설치
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      ## 패키지 requirements 설치
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      ## DB 컨테이너 내부 health check 용도
+      - name: Wait for DB to be ready
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      ## CI에서 makemigrations 생략
+      - name: Run migrations
+        run: python manage.py migrate --settings=config.settings.dev
+
+      ## CI에서 단위 테스트 실행
+      - name: Run tests
+        run: python manage.py test --settings=config.settings.dev
