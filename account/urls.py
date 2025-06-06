@@ -12,7 +12,7 @@ urlpatterns = [
 
     path('follow/create', CreateFollowView.as_view(), name='following'),
     path('follow/', ReadFollowListView.as_view(), name='follow'),
-    path('follow/delete/<int:pk>/', DeleteFollowView.as_view()),
+    path('follow/delete/<int:pk>/', DeleteFollowView.as_view(), name='unfollowing'),
 
     path('login/', LoginView.as_view(), name='login'), 
     path('verify-email/<int:user_id>/', ConfirmEmailView.as_view()),

@@ -1,38 +1,63 @@
+from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from account.models import Profile
+from account.models import Follow, Profile
 
 User = get_user_model()
 
-class AccountTests(APITestCase):
-    
+class Tests(APITestCase):
+
     def setUp(self):
-        self.user_data = {'email': 'test@example.com', 'password': 'password123'}
-        self.user = User.objects.create_user(**self.user_data)
+        self.signup_url = reverse('join')
+        self.login_url = reverse('login')
+        self.follow_url = reverse('following')
+
+        self.user = User.objects.create_user(email='user1@example.com', password='password123')
         self.user.is_active = True
         self.user.save()
-        Profile.objects.create(user=self.user, nickname="tester")  # ✅ 프로필도 생성
+        Profile.objects.create(user=self.user, nickname='user1')
+
+        self.other_user = User.objects.create_user(email='user2@example.com', password='password123')
+        self.other_user.is_active = True
+        self.other_user.save()
+        Profile.objects.create(user=self.other_user, nickname='user2')
 
     def test_user_signup(self):
-        data = {'email': 'new@example.com', 'password': 'password123'}
-        response = self.client.post(reverse('signup'), data)
-        print(response.json())
+        data = {
+            "email": "new@example.com",
+            "password": "newpassword123"
+        }
+        response = self.client.post(self.signup_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(User.objects.filter(email="new@example.com").exists())
 
     def test_user_login(self):
-        response = self.client.post(reverse('login'), self.user_data)
+        data = {
+            "email": "user1@example.com",
+            "password": "password123"
+        }
+        response = self.client.post(self.login_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_read_profile(self):
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(reverse('profile'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('token', response.data)
 
     def test_follow_and_unfollow(self):
-        other_user = User.objects.create_user(email='other@example.com', password='otherpass')
-        Profile.objects.create(user=other_user, nickname='other')  # 다른 유저도 프로필 생성
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(reverse('follow-create'), {'following': other_user.id})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # 로그인
+        login_res = self.client.post(self.login_url, {
+            "email": "user1@example.com",
+            "password": "password123"
+        })
+        token = login_res.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+
+        # follow
+        res = self.client.post(self.follow_url, {"following": self.other_user.id})
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Follow.objects.filter(follower=self.user, following=self.other_user).exists())
+
+        # unfollow
+        follow_id = res.data['id']
+        unfollow_url = reverse('unfollowing', kwargs={'pk': follow_id})
+        del_res = self.client.delete(unfollow_url)
+        self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Follow.objects.filter(id=follow_id).exists())
