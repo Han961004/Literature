@@ -47,7 +47,7 @@ class Tests(APITestCase):
             "email": "user1@example.com",
             "password": "password123"
         })
-        token = login_res.data['token']
+        token = login_res.data['response']['token']  # <- 수정된 부분
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
         # follow
