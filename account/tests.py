@@ -27,7 +27,7 @@ class Tests(APITestCase):
     def authenticate(self):
         res = self.client.post(self.login_url, {"email": "user1@example.com", "password": "password123"})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        token = res.data['token'] if 'token' in res.data else res.data['response']['token']
+        token = res.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
     # 회원 가입 및 프로필 생성 성공
