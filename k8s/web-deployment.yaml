@@ -19,7 +19,7 @@ spec:
             - containerPort: 8000
           env:
             - name: DJANGO_SETTINGS_MODULE
-              value: config.prod
+              value: config.settings.prod
           command: ["/bin/sh", "-c"]
           args:
             - |
