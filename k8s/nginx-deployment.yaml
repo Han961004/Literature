@@ -1,27 +1,11 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: nginx
+  name: web
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-      volumes:
-        - name: nginx-conf
-          configMap:
-            name: nginx-config
+    app: web
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
