@@ -10,7 +10,14 @@ class Tests(APITestCase):
 
     # 초기화 user1~3 생성
     def setUp(self):
-        self.join_url = reverse('user_create')
+        self.user_create_url = reverse('user_create')
+        self.user_read_url = reverse('user_read')
+        self.user_update_url = reverse('user_update')
+        self.user_delete_url = reverse('user_delete')
+        self.profile_read_url = reverse('profile_read')
+        self.profile_update_url = reverse('profile_update')
+        self.follow_create_url = reverse('follow_create')
+        self.follow_read_url = reverse('follow_read')
         self.login_url = reverse('login')
 
         self.user1 = User.objects.create_user(email='user1@example.com', password='password123')
@@ -36,16 +43,16 @@ class Tests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
 
     # 회원 가입 및 프로필 생성 성공
-    def test_user_join_success(self):
+    def test_user_create_success(self):
         data = {"email": "new@example.com", "password": "newpassword123"}
-        res = self.client.post(self.join_url, data)
+        res = self.client.post(self.user_create_url, data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(User.objects.filter(email="new@example.com").exists())
     
     # 회원 가입 실패
-    def test_user_join_fail(self):
+    def test_user_create_fail(self):
         data = {"email": "user1@example.com", "password": "short"}
-        res = self.client.post(self.join_url, data)
+        res = self.client.post(self.user_create_url, data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     # 회원 정보 수정 성공(패스워드 변경)

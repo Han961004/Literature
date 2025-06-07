@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: your-dockerhub-username/literature:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: app-volume
+              mountPath: /app
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              python manage.py makemigrations --noinput &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000
+      volumes:
+        - name: app-volume
+          emptyDir: {}
