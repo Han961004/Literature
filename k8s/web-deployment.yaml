@@ -17,6 +17,9 @@ spec:
           image: donghk77/literature:latest
           ports:
             - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: config.prod
           command: ["/bin/sh", "-c"]
           args:
             - |
