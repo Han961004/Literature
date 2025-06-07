@@ -20,6 +20,16 @@ spec:
           env:
             - name: DJANGO_SETTINGS_MODULE
               value: config.settings.prod
+                - name: EMAIL_HOST_USER
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: EMAIL_HOST_USER
+            - name: EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: EMAIL_HOST_PASSWORD
           command: ["/bin/sh", "-c"]
           args:
             - |
