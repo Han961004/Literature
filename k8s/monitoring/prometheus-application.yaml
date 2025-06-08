@@ -6,22 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: kube-prometheus-stack
-    targetRevision: 56.6.2  # 최신 버전 확인 가능
-    helm:
-      values: |
-        grafana:
-          adminPassword: prom-1234
-          service:
-            type: NodePort
-          ingress:
-            enabled: false
-        prometheus:
-          service:
-            type: NodePort
-          ingress:
-            enabled: false
+    repoURL: https://github.com/Han961004/Literature.git
+    targetRevision: main
+    path: k8s/monitoring
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -29,3 +16,6 @@ spec:
     automated:
       selfHeal: true
       prune: true
+  info:
+    - name: Namespace
+      value: "monitoring"
