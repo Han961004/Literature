@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/han961004/literature.git
+    repoURL: https://github.com/Han961004/literature.git
     targetRevision: main
     path: k8s/literature-chart
     helm:
