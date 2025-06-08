@@ -1,0 +1,19 @@
+# monitoring-crds-application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-crds
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Han961004/Literature.git
+    targetRevision: main
+    path: k8s/monitoring-crds
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
