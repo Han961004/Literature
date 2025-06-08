@@ -6,7 +6,7 @@ db:
 
 web:
   image: donghk77/literature:latest
-  settingsModule: config.settings.prod
+  settingsModule: config.settings.prod 
 
 nginx:
   image: nginx:latest
