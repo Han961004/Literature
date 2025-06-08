@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: literature
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/han961004/literature.git
+    targetRevision: main
+    path: k8s/literature-chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: literature
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
