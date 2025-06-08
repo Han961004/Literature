@@ -1,0 +1,14 @@
+# 간단한 기본 설정. 필요에 따라 확장 가능
+grafana:
+  adminPassword: admin
+  service:
+    type: LoadBalancer
+  ingress:
+    enabled: false
+
+prometheus:
+  service:
+    type: ClusterIP
+
+prometheusOperator:
+  enabled: true
