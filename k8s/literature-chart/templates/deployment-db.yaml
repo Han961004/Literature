@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
         - name: db
-          image: postgres:14
+          image: {{ .Values.db.image }}
           env:
             - name: POSTGRES_DB
-              value: "literature"
+              value: {{ .Values.db.dbName | quote }}
             - name: POSTGRES_USER
-              value: "postgres"
+              value: {{ .Values.db.user | quote }}
             - name: POSTGRES_PASSWORD
-              value: "0000"
+              value: {{ .Values.db.password | quote }}
           ports:
             - containerPort: 5432

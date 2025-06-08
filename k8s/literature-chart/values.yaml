@@ -1,0 +1,12 @@
+db:
+  image: postgres:14
+  dbName: literature
+  user: postgres
+  password: "0000"
+
+web:
+  image: donghk77/literature:latest
+  settingsModule: config.settings.prod
+
+nginx:
+  image: nginx:latest

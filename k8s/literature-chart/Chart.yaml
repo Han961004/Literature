@@ -1,0 +1,5 @@
+apiVersion: v2
+name: literature-chart         # 차트 이름
+description: A Helm chart for deploying Literature app
+version: 0.1.0                 # 이 Helm chart 자체의 버전
+appVersion: "1.0.0"           # 실제 앱(웹앱 등)의 버전
