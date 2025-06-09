@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "grafana.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "grafana.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "grafana.name" . }}
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: {{ .Values.adminPassword | quote }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/grafana/provisioning/datasources
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "grafana.fullname" . }}-datasources
